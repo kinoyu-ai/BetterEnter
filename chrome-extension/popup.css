@@ -1,0 +1,13 @@
+:root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+body { margin: 0; width: 290px; }
+main { padding: 20px; }
+header { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; margin-bottom: 20px; }
+header img { width: 250px; height: auto; }
+h1 { margin: 0; font-size: 24px; }
+small { display: block; font-size: 12px; font-weight: normal; opacity: .7; }
+label { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+input { accent-color: #09876b; width: 18px; height: 18px; }
+dl { display: grid; grid-template-columns: 1fr auto; gap: 10px; padding: 16px; border: 1px solid #8885; border-radius: 10px; font-size: 14px; }
+dt, dd { margin: 0; }
+p { font-size: 12px; line-height: 1.7; opacity: .8; }
+#status { margin-bottom: 0; }

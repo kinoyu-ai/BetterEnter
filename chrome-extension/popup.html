@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BeterEnter</title>
+<link rel="stylesheet" href="popup.css">
+<main>
+  <header><picture><source srcset="wordmark-dark.svg" media="(prefers-color-scheme: dark)"><img src="wordmark.svg" width="250" height="70" alt="Better↩"></picture><small>BeterEnter for ChatGPT</small></header>
+  <label><input id="enabled" type="checkbox" disabled> キー変更を有効にする</label>
+  <dl><dt>Enter / Shift+Enter</dt><dd>Shift+Enter</dd><dt>Ctrl+Enter</dt><dd>通常の Enter</dd></dl>
+  <p>確定・送信には Ctrl+Enter を使います。変換中の処理は ChatGPT と IME に任せます。メッセージ入力欄だけで動作します。</p>
+  <p id="status" role="status" aria-live="polite"></p>
+</main>
+<script src="popup.js"></script>
+</html>

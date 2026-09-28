@@ -8,9 +8,9 @@ ChatGPTで **Enterを改行、Ctrl+Enterを送信**にするツールです。Wi
 | --- | --- |
 | Enter | 改行 |
 | Shift+Enter | 改行 |
-| Ctrl+Enter | 通常のEnterとして動作（通常は送信） |
+| Ctrl+Enter | 送信 |
 
-変換確定にもCtrl+Enterを使う想定です。IMEの変換中かどうかは判定せず、キーをChatGPTとIMEに渡します。IMEやアプリによって挙動が異なる場合があるため、最初に短い文章で確認してください。
+IME変換中のEnterは変更しないため、通常どおり変換確定に使えます。変換確定後、Ctrl+Enterで送信します。
 
 ## ダウンロードと導入
 
@@ -44,7 +44,7 @@ Chrome 111以降が必要です。拡張機能は `chatgpt.com` と `chat.openai
 
 ## 対象とプライバシー
 
-Windowsアプリ版はChatGPTのWindowsアプリが対象です。Chrome拡張版はChrome上のChatGPTが対象です。検索欄や他のアプリ・サイトには適用しません。
+Windowsアプリ版はChatGPTのWindowsアプリが前面にある間だけ動作します。Chrome拡張版はChrome上のChatGPTの入力欄だけが対象です。他のアプリやサイトには適用しません。
 
 会話やキー入力を収集・送信しません。Chrome版は有効／無効の設定を保存します。Windows版は入力欄の識別に必要な設定を、必要な場合に限りPC内へ保存します。
 

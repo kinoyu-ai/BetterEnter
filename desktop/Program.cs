@@ -64,9 +64,9 @@ namespace BeterEnter
         {
             activeIcon = TrayIcons.Load(false); pausedIcon = TrayIcons.Load(true);
             ContextMenuStrip menu = new ContextMenuStrip(); trayMenu = menu;
-            ToolStripMenuItem titleItem = new ToolStripMenuItem("BeterEnter 1.3.0"); titleItem.Enabled = false;
+            ToolStripMenuItem titleItem = new ToolStripMenuItem("BeterEnter 1.4.0"); titleItem.Enabled = false;
             menu.Items.Add(titleItem);
-            enabledItem = new ToolStripMenuItem("有効（Enter→Shift+Enter / Ctrl+Enter→Enter）");
+            enabledItem = new ToolStripMenuItem("有効（Enter：改行 / Ctrl+Enter：送信）");
             enabledItem.Checked = enabled;
             enabledItem.Click += delegate { SetEnabled(!enabled); };
             menu.Items.Add(enabledItem);
@@ -102,7 +102,7 @@ namespace BeterEnter
             tray.DoubleClick += delegate { SetEnabled(!enabled); };
 
             // UIA calls can block in another process. Run them outside the keyboard hook.
-            focusChanged = delegate { Interlocked.Increment(ref focusGeneration); snapshot = new FocusSnapshot(); };
+            focusChanged = delegate { Interlocked.Increment(ref focusGeneration); };
             Thread monitor = new Thread(MonitorFocus); monitor.IsBackground = true;
             monitor.SetApartmentState(ApartmentState.MTA); monitor.Start();
             hookProc = OnKey;
@@ -119,7 +119,7 @@ namespace BeterEnter
                 }
             };
             uiTimer.Start();
-            tray.ShowBalloonTip(3500, "BeterEnter を開始しました", "ChatGPT の入力欄で Enter→Shift+Enter、Ctrl+Enter→Enter。確定・送信には Ctrl+Enter を使います。", ToolTipIcon.Info);
+            tray.ShowBalloonTip(3500, "BeterEnter を開始しました", "ChatGPT では Enterで改行、Ctrl+Enterで送信します。IME変換中のEnterは変更しません。", ToolTipIcon.Info);
         }
 
         private void SetEnabled(bool value)
@@ -149,10 +149,7 @@ namespace BeterEnter
                 {
                     next.Window = Native.GetForegroundWindow();
                     uint pid; Native.GetWindowThreadProcessId(next.Window, out pid);
-                    using (Process process = Process.GetProcessById((int)pid)) {
-                        if (String.Equals(process.ProcessName, "ChatGPT", StringComparison.OrdinalIgnoreCase))
-                            next.ChatGpt = KeyPolicy.IsChatGpt(process.ProcessName, process.MainModule.FileName);
-                    }
+                    next.ChatGpt = IsChatGptWindow(next.Window);
                     if (next.ChatGpt)
                     {
                         AutomationElement element = AutomationElement.FocusedElement;
@@ -199,6 +196,22 @@ namespace BeterEnter
             return true;
         }
 
+        private static bool IsChatGptWindow(IntPtr window)
+        {
+            if (window == IntPtr.Zero) return false;
+            try
+            {
+                uint pid; Native.GetWindowThreadProcessId(window, out pid);
+                using (Process process = Process.GetProcessById((int)pid))
+                {
+                    string path = null;
+                    try { path = process.MainModule.FileName; } catch { }
+                    return KeyPolicy.IsChatGpt(process.ProcessName, path);
+                }
+            }
+            catch { return false; }
+        }
+
         private IntPtr OnKey(int code, IntPtr message, IntPtr data)
         {
             if (code < 0) return Native.CallNextHookEx(hook, code, message, data);
@@ -211,11 +224,12 @@ namespace BeterEnter
             try
             {
                 FocusSnapshot s = snapshot;
-                bool valid = s.Composer && s.Window == Native.GetForegroundWindow()
-                    && Stopwatch.GetTimestamp() - s.Time < Stopwatch.Frequency / 2
-                    && s.FocusWindow == Native.FocusWindow(s.Window);
-                EnterAction action = KeyPolicy.Decide(enabled, valid, Native.Down(Native.Ctrl), Native.Down(Native.Shift),
-                    Native.Down(Native.Alt), Native.Down(Native.LWin) || Native.Down(Native.RWin));
+                IntPtr foreground = Native.GetForegroundWindow();
+                bool chatGpt = s.ChatGpt && s.Window == foreground
+                    && Stopwatch.GetTimestamp() - s.Time < Stopwatch.Frequency / 2;
+                if (!chatGpt) chatGpt = IsChatGptWindow(foreground);
+                EnterAction action = KeyPolicy.Decide(enabled, chatGpt, Native.Down(Native.Ctrl), Native.Down(Native.Shift),
+                    Native.Down(Native.Alt), Native.Down(Native.LWin) || Native.Down(Native.RWin), Native.IsImeComposing(foreground));
                 if (action != EnterAction.Pass)
                 {
                     suppressEnter = true;

@@ -41,6 +41,9 @@ namespace BeterEnter
         [DllImport("user32.dll")] public static extern bool GetGUIThreadInfo(uint thread, ref GuiInfo info);
         [DllImport("user32.dll")] public static extern short GetAsyncKeyState(int key);
         [DllImport("user32.dll", SetLastError = true)] private static extern uint SendInput(uint count, Input[] inputs, int size);
+        [DllImport("imm32.dll")] private static extern IntPtr ImmGetContext(IntPtr window);
+        [DllImport("imm32.dll")] private static extern bool ImmReleaseContext(IntPtr window, IntPtr context);
+        [DllImport("imm32.dll", CharSet = CharSet.Unicode)] private static extern int ImmGetCompositionString(IntPtr context, uint index, IntPtr buffer, uint length);
 
         public static bool Down(int key) { return (GetAsyncKeyState(key) & 0x8000) != 0; }
         public static IntPtr FocusWindow(IntPtr foreground)
@@ -49,6 +52,15 @@ namespace BeterEnter
             uint thread = GetWindowThreadProcessId(foreground, out process);
             GuiInfo info = new GuiInfo(); info.size = Marshal.SizeOf(typeof(GuiInfo));
             return GetGUIThreadInfo(thread, ref info) && info.focus != IntPtr.Zero ? info.focus : foreground;
+        }
+
+        public static bool IsImeComposing(IntPtr foreground)
+        {
+            IntPtr window = FocusWindow(foreground);
+            IntPtr context = ImmGetContext(window);
+            if (context == IntPtr.Zero) return false;
+            try { return ImmGetCompositionString(context, 0x0008, IntPtr.Zero, 0) > 0; }
+            finally { ImmReleaseContext(window, context); }
         }
 
         private static Input Key(int vk, bool up)

@@ -1,6 +1,6 @@
 using System.Reflection;
 [assembly: AssemblyTitle("BeterEnter for ChatGPT")]
-[assembly: AssemblyDescription("Enter to Shift+Enter, Ctrl+Enter to Enter in ChatGPT")]
+[assembly: AssemblyDescription("Enter for newline and Ctrl+Enter to send in ChatGPT")]
 [assembly: AssemblyProduct("BeterEnter")]
-[assembly: AssemblyVersion("1.3.0.0")]
-[assembly: AssemblyFileVersion("1.3.0.0")]
+[assembly: AssemblyVersion("1.4.0.0")]
+[assembly: AssemblyFileVersion("1.4.0.0")]

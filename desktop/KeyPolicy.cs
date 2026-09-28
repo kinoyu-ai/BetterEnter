@@ -6,19 +6,19 @@ namespace BeterEnter
 
     internal static class KeyPolicy
     {
-        public static EnterAction Decide(bool enabled, bool composer, bool ctrl, bool shift, bool alt, bool win)
+        public static EnterAction Decide(bool enabled, bool chatGpt, bool ctrl, bool shift, bool alt, bool win, bool composing)
         {
-            if (!enabled || !composer || alt || win) return EnterAction.Pass;
+            if (!enabled || !chatGpt || alt || win || composing) return EnterAction.Pass;
             if (ctrl) return EnterAction.Send;
             return shift ? EnterAction.Pass : EnterAction.Newline;
         }
 
         public static bool IsChatGpt(string processName, string executablePath)
         {
-            if (!String.Equals(processName, "ChatGPT", StringComparison.OrdinalIgnoreCase) || String.IsNullOrEmpty(executablePath)) return false;
+            if (!String.Equals(processName, "ChatGPT", StringComparison.OrdinalIgnoreCase)) return false;
             // Codex currently shares the ChatGPT.exe filename. Fail closed for its package.
-            return executablePath.IndexOf("Codex", StringComparison.OrdinalIgnoreCase) < 0
-                && executablePath.EndsWith("\\ChatGPT.exe", StringComparison.OrdinalIgnoreCase);
+            return String.IsNullOrEmpty(executablePath) || (executablePath.IndexOf("Codex", StringComparison.OrdinalIgnoreCase) < 0
+                && executablePath.EndsWith("\\ChatGPT.exe", StringComparison.OrdinalIgnoreCase));
         }
 
         public static bool IsComposer(string id, string name, bool editable, string customId)

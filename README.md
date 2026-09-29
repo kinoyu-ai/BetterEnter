@@ -10,7 +10,7 @@ ChatGPTで **Enterを改行、Ctrl+Enterを送信**にするツールです。Wi
 | Shift+Enter | 改行 |
 | Ctrl+Enter | 送信 |
 
-IME変換中のEnterは変更しないため、通常どおり変換確定に使えます。変換確定後、Ctrl+Enterで送信します。
+IME変換中も同じキー変更を適用します。Enterは改行、Ctrl+Enterは送信になります。IMEの変換確定に通常のEnterが必要な場合は、通知領域または拡張機能のメニューからBeterEnterを一時停止してください。
 
 ## ダウンロードと導入
 

@@ -67,9 +67,6 @@
     const editor = composerOf(event);
     if (!editor || editor.getAttribute("aria-disabled") === "true" || editor.disabled || editor.readOnly) return;
 
-    // Keep Enter available to confirm an active IME conversion.
-    if (event.isComposing || event.keyCode === 229) return;
-
     event.preventDefault();
     event.stopImmediatePropagation();
 

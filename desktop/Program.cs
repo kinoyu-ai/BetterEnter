@@ -64,7 +64,7 @@ namespace BeterEnter
         {
             activeIcon = TrayIcons.Load(false); pausedIcon = TrayIcons.Load(true);
             ContextMenuStrip menu = new ContextMenuStrip(); trayMenu = menu;
-            ToolStripMenuItem titleItem = new ToolStripMenuItem("BeterEnter 1.4.0"); titleItem.Enabled = false;
+            ToolStripMenuItem titleItem = new ToolStripMenuItem("BeterEnter 1.4.1"); titleItem.Enabled = false;
             menu.Items.Add(titleItem);
             enabledItem = new ToolStripMenuItem("有効（Enter：改行 / Ctrl+Enter：送信）");
             enabledItem.Checked = enabled;
@@ -119,7 +119,7 @@ namespace BeterEnter
                 }
             };
             uiTimer.Start();
-            tray.ShowBalloonTip(3500, "BeterEnter を開始しました", "ChatGPT では Enterで改行、Ctrl+Enterで送信します。IME変換中のEnterは変更しません。", ToolTipIcon.Info);
+            tray.ShowBalloonTip(3500, "BeterEnter を開始しました", "ChatGPT ではIME変換中を含め、Enterで改行、Ctrl+Enterで送信します。", ToolTipIcon.Info);
         }
 
         private void SetEnabled(bool value)
@@ -229,7 +229,7 @@ namespace BeterEnter
                     && Stopwatch.GetTimestamp() - s.Time < Stopwatch.Frequency / 2;
                 if (!chatGpt) chatGpt = IsChatGptWindow(foreground);
                 EnterAction action = KeyPolicy.Decide(enabled, chatGpt, Native.Down(Native.Ctrl), Native.Down(Native.Shift),
-                    Native.Down(Native.Alt), Native.Down(Native.LWin) || Native.Down(Native.RWin), Native.IsImeComposing(foreground));
+                    Native.Down(Native.Alt), Native.Down(Native.LWin) || Native.Down(Native.RWin));
                 if (action != EnterAction.Pass)
                 {
                     suppressEnter = true;

@@ -1,6 +1,6 @@
 {
   "name": "beterenter",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "license": "MIT",
   "private": true,
   "description": "ChatGPT Enter/Ctrl+Enter remapping for Chrome and Windows",

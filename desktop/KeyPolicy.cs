@@ -6,9 +6,9 @@ namespace BeterEnter
 
     internal static class KeyPolicy
     {
-        public static EnterAction Decide(bool enabled, bool chatGpt, bool ctrl, bool shift, bool alt, bool win, bool composing)
+        public static EnterAction Decide(bool enabled, bool chatGpt, bool ctrl, bool shift, bool alt, bool win)
         {
-            if (!enabled || !chatGpt || alt || win || composing) return EnterAction.Pass;
+            if (!enabled || !chatGpt || alt || win) return EnterAction.Pass;
             if (ctrl) return EnterAction.Send;
             return shift ? EnterAction.Pass : EnterAction.Newline;
         }
